@@ -207,7 +207,7 @@ client.on('message',async message => {
     
 if(message.author.bot) return;
 if(!credits[message.author.id]) credits[message.author.id] = {
-    credits: 0
+    credits: 50
 };
 
 let userData = credits[message.author.id];
@@ -217,16 +217,16 @@ fs.writeFile("./creditsCode.json", JSON.stringify(credits), (err) => {
     if (err) console.error(err);
   });
   credits[message.author.id] = {
-      
+      credits: m + 0,
   }
   
     if(message.content.startsWith(prefix + "credit" || prefix + "credits")) {
-message.channel.send(`**${message.author.username}, أنت :sparkling_heart::credit_card: تملك كريدت \`\`${userData.credits}\`\`.**`);
+message.channel.send(`**${message.author.username}, your :credit_card: balance is \`\`${userData.credits}\`\`.**`);
 }
 });
 
 client.on('message', async message => {
-    let amount = 500;
+    let amount = 250;
     if(message.content.startsWith(prefix + "daily")) {
     if(message.author.bot) return;
     if(coolDown.has(message.author.id)) return message.channel.send(`**:stopwatch: | ${message.author.username}, your daily :yen: credits refreshes in \`\`1 Day\`\`.**`);
@@ -241,7 +241,7 @@ client.on('message', async message => {
     if (err) console.error(err);
     });
     
-    message.channel.send(`**:atm: | ${message.author.username}, انت لقد قمت باخد راتبك اليومي :yen: ${amount} credits!**`).then(() => {
+    message.channel.send(`**:atm: | ${message.author.username}, you received your :yen: ${amount} credits!**`).then(() => {
         coolDown.add(message.author.id);
     });
     
@@ -250,14 +250,6 @@ client.on('message', async message => {
     },86400000);
     }
 });
-
-
-
-
-
-
-
-
 
 client.on('message', message => {
      if(!message.channel.guild) return;
