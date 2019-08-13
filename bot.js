@@ -221,7 +221,7 @@ fs.writeFile("./creditsCode.json", JSON.stringify(credits), (err) => {
   }
   
     if(message.content.startsWith(prefix + "credit" || prefix + "credits")) {
-message.channel.send(`**${message.author.username}, your :credit_card: balance is \`\`${userData.credits}\`\`.**`);
+message.channel.send(`**${message.author.username}, أنت :sparkling_heart::credit_card: تملك كريدت \`\`${userData.credits}\`\`.**`);
 }
 });
 
@@ -241,13 +241,13 @@ client.on('message', async message => {
     if (err) console.error(err);
     });
     
-    message.channel.send(`**:atm: | ${message.author.username}, you received your :yen: ${amount} credits!**`).then(() => {
+    message.channel.send(`**:atm: | ${message.author.username}, انت لقد قمت باخد راتبك اليومي :yen: ${amount} credits!**`).then(() => {
         coolDown.add(message.author.id);
     });
     
     setTimeout(() => {
        coolDown.remove(message.author.id);
-    },1);
+    },86400000);
     }
 });
 
