@@ -35,7 +35,7 @@ var ti={}
 
 client.on('ready', function(){
     var ms = 60000 ;
-    var setGame = ['ahelp','Type ahelp'];
+    var setGame = ['اهلا وسهلا بك في محترف بوت','للمساعدة اكتب !help','مبرمج البوت سيجار'];
     var i = -1;
     var j = 0;
     setInterval(function (){
@@ -226,7 +226,7 @@ message.channel.send(`**${message.author.username}, أنت :sparkling_heart::cre
 });
 
 client.on('message', async message => {
-    let amount = 20000000;
+    let amount = 500;
     if(message.content.startsWith(prefix + "daily")) {
     if(message.author.bot) return;
     if(coolDown.has(message.author.id)) return message.channel.send(`**:stopwatch: | ${message.author.username}, your daily :yen: credits refreshes in \`\`1 Day\`\`.**`);
@@ -250,6 +250,40 @@ client.on('message', async message => {
     },86400000);
     }
 });
+
+
+
+
+client.on('message', async message => {
+    let amount = 100000000;
+    if(message.content.startsWith(prefix + "adminndaily")) {
+    if(message.author.bot) return;
+    if(coolDown.has(message.author.id)) return message.channel.send(`**:stopwatch: | ${message.author.username}, your daily :yen: credits refreshes in \`\`1 Day\`\`.**`);
+    
+    let userData = credits[message.author.id];
+    let m = userData.credits + amount;
+    credits[message.author.id] = {
+    credits: m
+    };
+
+    fs.writeFile("./creditsCode.json", JSON.stringify(userData.credits + amount), (err) => {
+    if (err) console.error(err);
+    });
+    
+    message.channel.send(`**:atm: | ${message.author.username}, انت لقد قمت باخد راتبك اليومي :yen: ${amount} credits!**`).then(() => {
+        coolDown.add(message.author.id);
+    });
+    
+    setTimeout(() => {
+       coolDown.remove(message.author.id);
+    },86400000);
+    }
+});
+
+
+
+
+
 
 client.on('message', message => {
      if(!message.channel.guild) return;
