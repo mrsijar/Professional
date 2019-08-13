@@ -1,0 +1,2 @@
+NODE bc.js
+start
