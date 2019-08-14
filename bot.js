@@ -200,7 +200,13 @@ ${prefix}voiceonline / لتفعيل روم الفويس اونلاين
     }
 }); 
 
+
+
+const credits = JSON.parse(fs.readFileSync("./creditsCode.json", "utf8"));
+const coolDown = new Set();
+
 client.on("message", (message) => {
+	
   let men = message.mentions.users.first()
  
   if (message.author.bot) return;
