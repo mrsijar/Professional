@@ -205,42 +205,35 @@ ${prefix}voiceonline / لتفعيل روم الفويس اونلاين
 const credits = JSON.parse(fs.readFileSync("./creditsCode.json", "utf8"));
 const coolDown = new Set();
 
-client.on("message", (message) => {
-	
-  let men = message.mentions.users.first()
- 
-  if (message.author.bot) return;
-    if (message.author.id === client.user.id) return;
-    if(!message.channel.guild) return;
-if (message.content.startsWith(prefix + 'credit')) {
-  if(men) {
-    if (!profile[men.id]) profile[men.id] = {
-    lastDaily:'Not Collected',
-    credits: 1,
-  };
-  }
-  if(men) {
-message.channel.send(`** ${men.username}, :credit_card: balance` + " is `" + `${profile[men.id].credits}$` + "`.**")
-} else {
-  message.channel.send(`** ${message.author.username}, your :credit_card: balance` + " is `" + `${profile[message.author.id].credits}$` + "`.**")
-}
-}
- 
-if(message.content.startsWith(prefix + "daily")) {
-  if(profile[message.author.id].lastDaily != moment().format('day')) {
-    profile[message.author.id].lastDaily = moment().format('day')
-    profile[message.author.id].credits += 200
-     message.channel.send(`**${message.author.username} you collect your \`200\` :dollar: daily pounds**`)
-} else {
-    message.channel.send(`**:stopwatch: | ${message.author.username}, your daily :yen: credits refreshes ${moment().endOf('day').fromNow()}**`)
-}
-  }
+client.on('message',async message => {
+    
+if(message.author.bot) return;
+if(!credits[message.author.id]) credits[message.author.id] = {
+    credits: 50
+};
 
- 
- let cont = message.content.slice(prefix.length).split(" ");
+let userData = credits[message.author.id];
+let m = userData.credits;
+
+fs.writeFile("./creditsCode.json", JSON.stringify(credits), (err) => {
+    if (err) console.error(err);
+  });
+  credits[message.author.id] = {
+      credits: m + 0,
+  }
+  
+    if(message.content.startsWith(prefix + "credit" || prefix + "credits")) {
+message.channel.send(`**${message.author.username}, your :credit_card: balance is \`\`${userData.credits}\`\`.**`);
+}
+});
+
+
+client.on('message', async message => {
+	
+let cont = message.content.slice(prefix.length).split(" ");
 let args = cont.slice(1);
 let sender = message.author
-if(message.content.startsWith(prefix + 'trans')) {
+if(message.content.startsWith(prefix + 'credits')) {
           if (!args[0]) {
             message.channel.send(`**Usage: ${prefix}trans @someone amount**`);
          return;
@@ -268,8 +261,59 @@ if (err) console.error(err);
       let mariam = message.author.username
 message.channel.send(`**:moneybag: | ${message.author.username}, has transferrerd ` + "`" + args[0] + "$` to " + `<@${defineduser.id}>**`)
 }
- 
-      });
+
+});
+
+
+
+
+
+client.on('message', async message => {
+    let amount = 250;
+    if(message.content.startsWith(prefix + "daily")) {
+    if(message.author.bot) return;
+    if(coolDown.has(message.author.id)) return message.channel.send(`**:stopwatch: | ${message.author.username}, your daily :yen: credits refreshes in \`\`1 Day\`\`.**`);
+    
+    let userData = credits[message.author.id];
+    let m = userData.credits + amount;
+    credits[message.author.id] = {
+    credits: m
+    };
+
+    fs.writeFile("./creditsCode.json", JSON.stringify(userData.credits + amount), (err) => {
+    if (err) console.error(err);
+    });
+    
+    message.channel.send(`**:atm: | ${message.author.username}, you received your :yen: ${amount} credits!**`).then(() => {
+        coolDown.add(message.author.id);
+    });
+    
+    setTimeout(() => {
+       coolDown.remove(message.author.id);
+    },86400000);
+    }
+});
+
+client.on('message', message => {
+     if(!message.channel.guild) return;
+                if(message.content.startsWith(prefix + 'allbots')) {
+
+    
+    if (message.author.bot) return;
+    let i = 1;
+        const botssize = message.guild.members.filter(m=>m.user.bot).map(m=>`${i++} - <@${m.id}>`);
+          const embed = new Discord.RichEmbed()
+          .setAuthor(message.author.tag, message.author.avatarURL)
+          .setDescription(`**Found ${message.guild.members.filter(m=>m.user.bot).size} bots in this Server**
+${botssize.join('\n')}`)
+.setFooter(client.user.username, client.user.avatarURL)
+.setTimestamp();
+message.channel.send(embed)
+
+}
+
+
+});
 
 client.on('message', message => {
      if(!message.channel.guild) return;
